@@ -68,7 +68,7 @@ Wi-Fi credentials and Firebase/ThingSpeak keys have been removed from the code f
 ## Team
 - Gopal S M
 - Gopal Reddy
-- Venugopal H L
+- MD Shafiq
 
 **Guide:** Dr. Tanuja K S, Associate Professor and HOD, Department of EEE
 
