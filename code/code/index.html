@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Parking Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      text-align: center;
+      padding: 20px;
+      background-color: #1f1f1f;
+    }
+    h1 {
+      margin: 0;
+      font-size: 2em;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 20px;
+    }
+    .card {
+      background: #1f1f1f;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 10px;
+      min-width: 250px;
+      flex: 1 1 250px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    .card h2 {
+      margin-top: 0;
+    }
+    .status {
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+    .occupied {
+      color: #ff4d4d;
+    }
+    .available {
+      color: #4dff4d;
+    }
+    .time {
+      font-size: 0.9em;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Smart Parking Dashboard</h1>
+  </header>
+
+  <div class="container">
+    <!-- Total Cars -->
+    <div class="card">
+      <h2>Total Cars</h2>
+      <p id="carCount">0</p>
+    </div>
+
+    <!-- Slot 1 -->
+    <div class="card">
+      <h2>Slot 1</h2>
+      <p>Status: <span id="slot1Status" class="status available">Available</span></p>
+      <p class="time">Entry: <span id="slot1Entry">--:--</span></p>
+      <p class="time">Exit: <span id="slot1Exit">--:--</span></p>
+    </div>
+
+    <!-- Slot 2 -->
+    <div class="card">
+      <h2>Slot 2</h2>
+      <p>Status: <span id="slot2Status" class="status available">Available</span></p>
+      <p class="time">Entry: <span id="slot2Entry">--:--</span></p>
+      <p class="time">Exit: <span id="slot2Exit">--:--</span></p>
+    </div>
+
+    <!-- Slot 3 -->
+    <div class="card">
+      <h2>Slot 3</h2>
+      <p>Status: <span id="slot3Status" class="status available">Available</span></p>
+      <p class="time">Entry: <span id="slot3Entry">--:--</span></p>
+      <p class="time">Exit: <span id="slot3Exit">--:--</span></p>
+    </div>
+
+    <!-- Latest Car Entry -->
+    <div class="card">
+      <h2>Latest Entry</h2>
+      <p id="latestEntry">--:--</p>
+    </div>
+
+    <!-- Latest Car Exit -->
+    <div class="card">
+      <h2>Latest Exit</h2>
+      <p id="latestExit">--:--</p>
+    </div>
+  </div>
+
+  <script>
+    const firebaseURL = "https://iot-based-smart-parkinge-d8e29-default-rtdb.firebaseio.com/";
+
+    async function fetchData() {
+      try {
+        const response = await fetch(firebaseURL + ".json");
+        const data = await response.json();
+
+        // Update car count
+        document.getElementById("carCount").innerText = data.carCount || 0;
+
+        // Update Slot 1
+        const slot1Occupied = data.Slot1?.occupied === "true";
+        document.getElementById("slot1Status").innerText = slot1Occupied ? "Occupied" : "Available";
+        document.getElementById("slot1Status").className = "status " + (slot1Occupied ? "occupied" : "available");
+        document.getElementById("slot1Entry").innerText = data.Slot1?.entryTime || "--:--";
+        document.getElementById("slot1Exit").innerText = data.Slot1?.exitTime || "--:--";
+
+        // Update Slot 2
+        const slot2Occupied = data.Slot2?.occupied === "true";
+        document.getElementById("slot2Status").innerText = slot2Occupied ? "Occupied" : "Available";
+        document.getElementById("slot2Status").className = "status " + (slot2Occupied ? "occupied" : "available");
+        document.getElementById("slot2Entry").innerText = data.Slot2?.entryTime || "--:--";
+        document.getElementById("slot2Exit").innerText = data.Slot2?.exitTime || "--:--";
+
+        // Update Slot 3
+        const slot3Occupied = data.Slot3?.occupied === "true";
+        document.getElementById("slot3Status").innerText = slot3Occupied ? "Occupied" : "Available";
+        document.getElementById("slot3Status").className = "status " + (slot3Occupied ? "occupied" : "available");
+        document.getElementById("slot3Entry").innerText = data.Slot3?.entryTime || "--:--";
+        document.getElementById("slot3Exit").innerText = data.Slot3?.exitTime || "--:--";
+
+        // Update Latest Entry/Exit
+        document.getElementById("latestEntry").innerText = data.latestEntry || "--:--";
+        document.getElementById("latestExit").innerText = data.latestExit || "--:--";
+
+      } catch (error) {
+        console.error("Error fetching Firebase data:", error);
+      }
+    }
+
+    // Fetch data every 2 seconds
+    setInterval(fetchData, 2000);
+    fetchData();
+  </script>
+</body>
+</html>
